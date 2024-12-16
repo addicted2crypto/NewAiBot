@@ -1,0 +1,59 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chat-log {
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 500px;
+            height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Bot</h1>
+    <input id="user-input" type="text" placeholder="Type a message...">
+    <button id="send-button">Send</button>
+    <div id="chat-log"></div>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/ollama-js@latest/dist/ollama.min.js"></script>  -->
+    <script>
+        const inputElement = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const responseElement = document.getElementById('chat-log');
+        const ollamaApiUrl = 'http://localhost:2222/';
+
+        sendButton.addEventListener('click', async () => {
+          const input = inputElement.value;
+          if(input.trim() ==='')
+          return;
+          const newResponse = document.createElement('div');
+             newResponse.textContent = `You: ${input}`;
+              responseElement.appendChild(newResponse);
+
+              try {
+          const response = await fetch('http://localhost:2222/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input }),
+          });
+          const data = await response.json();
+        //   responseElement.textContent = data.response;
+        const botResponse = document.createElement('div');
+            botResponse.textContent = `Bot: ${data.response}`;
+            responseElement.appendChild(botResponse);
+        } catch(error) {
+            console.error(error)
+        }
+         inputElement.value = '';
+        });
+      </script>
+   
+</body>
+</html>
