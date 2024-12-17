@@ -12,7 +12,27 @@ app.use(express.json());
 
 
 
-const ollamaApiUrl = 'http://localhost:2222/';
+const ollamaApiUrl = 'http://localhost:2222';
+const requestBody = {
+  context: `Yo, addicted was here!`,
+  completion: {
+    max_tokens: 1024,
+    temperature: 1,
+  },
+};
+
+fetch(`${apiUrl}${chatEndpoint}`,
+{
+  method: 'POST',
+  headers: {'Content-type': 'application/json'},
+  body: JSON.stringify(requestBody),
+}).then((respnse) => respnse.json()).then((data) => {console.log(data)
+  
+}).catch((error) => {
+  console.error(error);
+});
+
+
 const chatBot = new Ollama({url: ollamaApiUrl});
 
 
