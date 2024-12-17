@@ -16,7 +16,7 @@ const ollamaApiUrl = 'http://localhost:2222/';
 const chatBot = new Ollama({url: ollamaApiUrl});
 
 
-app.post('/chat', async(req, res) => {
+app.post('/api/chat', async(req, res) => {
   try {
     const {input} = req.body;
     const response = await fetch(ollamaApiUrl + 'respond', {
