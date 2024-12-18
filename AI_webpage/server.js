@@ -13,6 +13,7 @@ app.use(express.json());
 
 
 const ollamaApiUrl = 'http://localhost:2222';
+const chatEndpoint ='/chat'
 const requestBody = {
   context: `Yo, addicted was here!`,
   completion: {
@@ -21,7 +22,7 @@ const requestBody = {
   },
 };
 
-fetch(`${apiUrl}${chatEndpoint}`,
+fetch(`${ollamaApiUrl}${chatEndpoint}`,
 {
   method: 'POST',
   headers: {'Content-type': 'application/json'},
@@ -37,18 +38,19 @@ const chatBot = new Ollama({url: ollamaApiUrl});
 
 
 app.post('/api/chat', async(req, res) => {
-  try {
-    const {input} = req.body;
-    const response = await fetch(ollamaApiUrl + 'respond', {
+  
+    const {context} = req.body;
+    const completion = {
+      max_tokens: 1024,
+      temperature: 0.7,
+    };
+    try {
+    const response = await fetch(`${ollamaApiUrl}/chat`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        input: {
-          text: input
-        },
-        context: {}
-      }),
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({context, completion}),
     });
+    
 
     if(!response.ok){
       throw new Error(`HEEP error! status: ${response.status}`);
