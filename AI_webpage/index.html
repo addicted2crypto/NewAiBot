@@ -28,28 +28,42 @@
         const sendButton = document.getElementById('send-button');
         const responseElement = document.getElementById('chat-log');
         const ollamaApiUrl = 'http://localhost:2222/';
+        let conversationContext = '';
 
         sendButton.addEventListener('click', async () => {
-          const input = inputElement.value;
+          const userInput = inputElement.value;
           if(input.trim() ==='')
           return;
+
           const newResponse = document.createElement('div');
-             newResponse.textContent = `You: ${input}`;
+             newResponse.textContent = `You: ${userInput}`;
               responseElement.appendChild(newResponse);
 
               try {
-          const response = await fetch('http://localhost:2222/chat', {
+                const requestBody = {
+                    context: conversationContext + '\n' + userInput,
+                    completion: {
+                        max_tokens: 1024,
+                        temperature: 1,
+                    },
+                };
+
+          const response = await fetch(`${ollamaApiUrl/chat}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ input }),
+            body: JSON.stringify({ context, completion }),
           });
           const data = await response.json();
-        //   responseElement.textContent = data.response;
-        const botResponse = document.createElement('div');
+          res.json({response: data.response});
+          conversationContext += userInput + '\n' + data.response;
+
+          const botResponse = document.createElement('div');
             botResponse.textContent = `Bot: ${data.response}`;
+           
             responseElement.appendChild(botResponse);
         } catch(error) {
-            console.error(error)
+            console.error(error);
+            res.status(500).json({error: 'Failed to generate a response'})
         }
          inputElement.value = '';
         });
