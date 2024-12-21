@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 // import  ollama from 'ollama';
 const { Ollama } = require('Ollama');
-const { axios } = require('axios');
+const  axios = require('axios');
 const path = require('path');
 const { response } = require('express');
 
@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 const ollamaApiUrl = 'http://localhost:2222';
-const chatEndpoint ='/chat'
+const chatEndpoint ='/api/chat'
 const requestBody = {
   context: `Yo, addicted was here!`,
   completion: {
@@ -22,40 +22,43 @@ const requestBody = {
   },
 };
 
-fetch(`${ollamaApiUrl}${chatEndpoint}`,
-{
-  method: 'POST',
-  headers: {'Content-type': 'application/json'},
-  body: JSON.stringify(requestBody),
-}).then((respnse) => respnse.json()).then((data) => {console.log(data)
+// fetch(`${ollamaApiUrl}${chatEndpoint}`,
+// {
+//   method: 'POST',
+//   headers: {'Content-type': 'application/json'},
+//   body: JSON.stringify(requestBody),
+// }).then((respnse) => respnse.json()).then((data) => {console.log(data)
   
-}).catch((error) => {
-  console.error(error);
-});
+// }).catch((error) => {
+//   console.error(error);
+// });
 
 
 const chatBot = new Ollama({url: ollamaApiUrl});
 
 
-app.post('/api/chat', async(req, res) => {
+app.post(chatEndpoint, async(req, res) => {
   
     const {context} = req.body;
     const completion = {
       max_tokens: 1024,
       temperature: 0.7,
     };
+
     try {
-    const response = await fetch(`${ollamaApiUrl}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify({context, completion}),
+    const response = await axios.post(`${ollamaApiUrl}/api/chat`, {
+      // method: 'POST',
+      // headers: { 'Content-Type': 'application/json'},
+      // body: JSON.stringify({context, completion}),
+      context,
+      completion,
     });
     
 
     if(!response.ok){
       throw new Error(`HEEP error! status: ${response.status}`);
     }
-    const data = await response.json();
+      const data = await response.data;
     console.log(data);
     res.json({response: data.output.text});
     

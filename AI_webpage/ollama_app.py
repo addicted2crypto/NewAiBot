@@ -8,7 +8,7 @@ if __name__ =="__main__":
     while question_count < number_of_questions:
         question = str(input("Questions: " ))
         data = {
-            # "model" : "llama3",
+            "model" : "llama3.2:3b-instruct-fp16",
             "messages" : [{"role": "user", "content": question}],
             "stream" : False
         }

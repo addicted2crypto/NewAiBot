@@ -27,12 +27,12 @@
         const inputElement = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
         const responseElement = document.getElementById('chat-log');
-        const ollamaApiUrl = 'http://localhost:2222/';
+        const ollamaApiUrl = 'http://localhost:2222';
         let conversationContext = '';
 
         sendButton.addEventListener('click', async () => {
           const userInput = inputElement.value;
-          if(input.trim() ==='')
+          if(userInput.trim() ==='')
           return;
 
           const newResponse = document.createElement('div');
@@ -48,13 +48,13 @@
                     },
                 };
 
-          const response = await fetch(`${ollamaApiUrl/chat}`, {
+          const response = await fetch(`${ollamaApiUrl}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ context, completion }),
+            body: JSON.stringify(requestBody),
           });
           const data = await response.json();
-          res.json({response: data.response});
+        //   res.json({response: data.response});
           conversationContext += userInput + '\n' + data.response;
 
           const botResponse = document.createElement('div');
