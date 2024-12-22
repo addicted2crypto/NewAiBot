@@ -1,11 +1,13 @@
 // server.js
+
 const express = require('express');
 const app = express();
-// import  ollama from 'ollama';
+
 const { Ollama } = require('Ollama');
 const  axios = require('axios');
 const path = require('path');
 const { response } = require('express');
+
 
 
 app.use(express.json());
@@ -15,7 +17,7 @@ app.use(express.json());
 const ollamaApiUrl = 'http://localhost:2222';
 const chatEndpoint ='/api/chat'
 const requestBody = {
-  context: `Yo, addicted was here!`,
+  
   completion: {
     max_tokens: 1024,
     temperature: 1,
@@ -73,7 +75,16 @@ app.post(chatEndpoint, async(req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-
+// async function main() {
+// const response = await ollama.chat({
+//   model: 'ollama3.2',
+//   messages: [
+//     {role: 'user', content: 'Why wont you work?'},
+//   ],
+// });
+// console.log(response.message.content);
+// }
+// main();
 // fetch('http://localhost:2222/models')
 //   .then(response => response.json())
 //   .then(data => console.log(data));
