@@ -48,8 +48,13 @@
                     },
                 };
 
-             fetch(`${ollamaApiUrl}/api/chat`, {
-            method: 'POST',
+             fetch(`${ollamaApiUrl}/api/generate -d`, {
+            'model': 'llama3.2:3b-instruct-fp16',
+            'promt': 'why are you broken? Resond using JSON',
+            'method': 'POST',
+            'format': 'json',
+            'stream': 'false',
+            
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody),
           }).then(response => response.json()).then(data => {
