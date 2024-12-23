@@ -27,7 +27,7 @@
         const inputElement = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
         const responseElement = document.getElementById('chat-log');
-        const ollamaApiUrl = 'http://localhost:2222';
+        const ollamaApiUrl = 'http://localhost:3000/api/chat';
         let conversationContext = '';
 
         sendButton.addEventListener('click', async () => {
@@ -44,48 +44,32 @@
                     context: conversationContext + '\n' + userInput,
                     completion: {
                         max_tokens: 1024,
-                        // temperature: 1,
+                        temperature: 0.7,
                     },
                 };
 
-             fetch(`${ollamaApiUrl}/api/chat`, {
-            'model': 'llama3.2:3b-instruct-fp16',
-            'promt': 'why are you broken? Resond using JSON',
-            'method': 'POST',
-            'format': 'json',
-            'stream': 'false',
+             fetch(ollamaApiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify(requestBody),
+              }).then(response => response.json()).then(data => {
+                conversationContext += userInput + '\n' + data.response;
+
             
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestBody),
-          }).then(response => response.json()).then(data => {
-
-          
-            conversationContext += userInput + '\n' + data.completion.text;
-          
-
-          // if(!response.ok){
-          //   throw new Error(`HTTP error with status: ${response.status}`);
-          // };
-        //   const data = await response.json();
-        // //   res.json({response: data.response});
-        //   conversationContext += userInput + '\n' + data.completion.text;
 
           const botResponse = document.createElement('div');
             botResponse.textContent = `Bot: ${data.completion.text}`;
            
-            responseElement.appendChild(botResponse);
-          }).catch(error => {
+            responseElement.appendChild(botResponse)
+              }).catch((error) => console.error('Error:', error));
+              } catch (error){
             console.error(error);
-            const errorMessage =  document.createElement('div');
-            errorMessage.textContent = 'Error: failed to generate a response;'
-          responseElement.appendChild(errorMessage);
-          })
-        } catch (error){
-          console.error(error);
         }
+          
          inputElement.value = '';
         });
       </script>
-   
+    
 </body>
 </html>
+        
