@@ -10,7 +10,7 @@ const path = require('path');
 app.use(express.json());
 
 const ollamaApiUrl = 'http://localhost:2222';
-const chatEndpoint ='/generate';
+const chatEndpoint ='/api/generate';
 
 
 
