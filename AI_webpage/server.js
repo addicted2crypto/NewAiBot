@@ -9,8 +9,8 @@ const path = require('path');
 
 app.use(express.json());
 
-const ollamaApiUrl = 'http://localhost:2222';
-const chatEndpoint ='/api/generate';
+const ollamaApiUrl = 'http://localhost:11434';
+const chatEndpoint ='/generate';
 
 
 
@@ -23,7 +23,7 @@ app.post('/api/chat', async(req, res) => {
     // };
 
     try {
-       const response = await axios.post(`${ollamaApiUrl}${chatEndpoint}`, req.body);
+       const response = await axios.post(`${ollamaApiUrl}`, req.body);
         
       if(!response.ok){
        throw new Error(`HEEP error! status: ${response.status}`);
