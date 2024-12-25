@@ -8,29 +8,36 @@ const  axios = require('axios');
 const path = require('path');
 
 app.use(express.json());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
-const ollamaApiUrl = 'http://localhost:11434';
-const chatEndpoint ='/generate';
+
+const ollamaApiUrl = 'http://localhost:11434/api/chat';
+
 
 
 
 app.post('/api/chat', async(req, res) => {
   
-    // const {context} = req.body;
-    // const completion = {
-    //   max_tokens: 1024,
-    //   temperature: 0.7,
-    // };
 
     try {
-       const response = await axios.post(`${ollamaApiUrl}`, req.body);
-        
+      console.log('Received req:', req.body);
+       const response = await fetch(ollamaApiUrl, {
+        method: 'POST',
+        headers: {'Content-Type' :'application/json'},
+        body: JSON.stringify(req.body),
+       });
+        console.log('Response:', response)
       if(!response.ok){
-       throw new Error(`HEEP error! status: ${response.status}`);
+       throw new Error(`OLLAMA API error! status: ${response.status}`);
     }
-      const data = response.data;
-    console.log(data);
-    res.json({response: data.completion});
+      const data = await response.json();
+    console.log('Response from Ollama API:', data);
+    res.json(data);
+    // res.status(200).json(data);
     
   } catch (error) {
     console.error(error);
@@ -40,22 +47,12 @@ app.post('/api/chat', async(req, res) => {
 
 
 
+
 app.get('/', (req, res) => {
+
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-// async function main() {
-// const response = await ollama.chat({
-//   model: 'ollama3.2',
-//   messages: [
-//     {role: 'user', content: 'Why wont you work?'},
-//   ],
-// });
-// console.log(response.message.content);
-// }
-// main();
-// fetch('http://localhost:2222/models')
-//   .then(response => response.json())
-//   .then(data => console.log(data));
+
 
 app.listen(3000, () => {
   console.log('Server listening on port 3000');

@@ -1,75 +1,88 @@
-
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat Bot</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #chat-log {
-            padding: 10px;
-            border: 1px solid #ccc;
-            width: 500px;
-            height: 300px;
-            overflow-y: auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat Bot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    #chat-log {
+      padding: 10px;
+      border: 1px solid #ccc;
+      width: 500px;
+      height: 300px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Chat Bot</h1>
-    <input id="user-input" type="text" placeholder="Type a message...">
-    <button id="send-button">Send</button>
-    <div id="chat-log"></div>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/ollama-js@latest/dist/ollama.min.js"></script>  -->
-    <script>
-        const inputElement = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
-        const responseElement = document.getElementById('chat-log');
-        const ollamaApiUrl = 'http://localhost:3000/api/chat';
-        let conversationContext = '';
+  <h1>Chat Bot</h1>
+  <input id="user-input" type="text" placeholder="Type a message...">
+  <button id="send-button">Send</button>
+  <div id="chat-log"></div>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/ollama-js@latest/dist/ollama.min.js"></script>  -->
+  <script>
+    const inputElement = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const responseElement = document.getElementById('chat-log');
+    const apiEndPoint = 'http://localhost:3000/api/chat';
+    // let conversationContext = '';
 
-        sendButton.addEventListener('click', async () => {
-          const userInput = inputElement.value;
-          if(userInput.trim() ==='')
-          return;
+    sendButton.addEventListener('click', async () => {
+      const userInput = inputElement.value;
+      if (userInput.trim() === '')
+        return;
 
-          const newResponse = document.createElement('div');
-             newResponse.textContent = `You: ${userInput}`;
-              responseElement.appendChild(newResponse);
+      const newResponse = document.createElement('div');
+      newResponse.textContent = `You: ${userInput}`;
+      responseElement.appendChild(newResponse);
 
-              try {
-                const requestBody = {
-                    context: conversationContext + '\n' + userInput,
-                    completion: {
-                        max_tokens: 1024,
-                        temperature: 0.7,
-                    },
-                };
+      try {
+        const requestBody = {
+          "model": "llama2",
+          "messages": [{ "role": "user", "content": userInput }],
+          "stream": false
+        };
 
-             fetch(ollamaApiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify(requestBody),
-              }).then(response => response.json()).then(data => {
-                conversationContext += userInput + '\n' + data.response;
+        fetch(apiEndPoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        }).then(response => {
+          console.log('Received response:', response);
+          return response.json();
+        }).then(data => {
+          console.log('Parsed response data:', data);
 
-            
+       
+
+
 
           const botResponse = document.createElement('div');
-            botResponse.textContent = `Bot: ${data.completion.text}`;
-           
-            responseElement.appendChild(botResponse)
-              }).catch((error) => console.error('Error:', error));
-              } catch (error){
-            console.error(error);
-        }
-          
-         inputElement.value = '';
-        });
-      </script>
-    
+         
+          if (data && data.message && data.message.content) {
+            botResponse.textContent = `Bot: ${data.message.content}`;
+            responseElement.appendChild(botResponse);
+
+          } else {
+            console.error('Invalid response data:', data);
+            // You could also set a default text or handle this case differently
+            botResponse.textContent = 'Bot: Unable to retrieve response.';
+          }
+          responseElement.appendChild(botResponse)
+        }).catch((error) => console.error('Error:', error));
+      } catch (error) {
+        console.error(error);
+      }
+
+      inputElement.value = '';
+    });
+  </script>
+
 </body>
+
 </html>
-        
