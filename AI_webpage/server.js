@@ -1,11 +1,12 @@
 // server.js
-
+import 'dotenv';
 const express = require('express');
 const app = express();
 
 
 const  axios = require('axios');
 const path = require('path');
+
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -15,7 +16,7 @@ app.use((req, res, next) => {
 });
 
 
-const ollamaApiUrl = 'http://localhost:11434/api/chat';
+const ollamaApiUrl = process.env.OLLAMA_API_URL;
 
 
 
