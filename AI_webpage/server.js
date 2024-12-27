@@ -1,5 +1,5 @@
 // server.js
-import 'dotenv';
+const dotenv = require('dotenv');
 const express = require('express');
 const app = express();
 
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 });
 
 
-const ollamaApiUrl = process.env.OLLAMA_API_URL;
+const ollamaApiUrl = 'http://localhost:11434/api/chat';
 
 //this is currently set to http://localhost:11434/
 
