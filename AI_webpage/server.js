@@ -18,6 +18,8 @@ app.use((req, res, next) => {
 
 const ollamaApiUrl = process.env.OLLAMA_API_URL;
 
+//this is currently set to http://localhost:11434/
+
 
 
 
